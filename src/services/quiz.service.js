@@ -30,8 +30,9 @@ const submitQuiz = async (studentId, payload) => {
   });
 
   const total = quiz.length;
-  // Code-4 bug: multiplied by 10 instead of 100
-  const percent = Math.round((score / total) * 10);
+  
+  // FIXED: Multiplied by 100 instead of 10 to get the correct percentage calculation
+  const percent = Math.round((score / total) * 100);
 
   // Check if student already submitted this quiz (optional - allow retakes)
   // If you want to prevent duplicates, uncomment the following:
