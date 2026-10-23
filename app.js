@@ -22,17 +22,13 @@ const connectDB = require("./src/config/db");
 // Connect to database (non-blocking for serverless)
 connectDB().catch((err) => {
   console.error("Initial DB connection failed:", err.message);
-  // Don't throw - let individual requests handle connection
 });
 
 const app = express();
 
 app.use(cors());
-// Code-10 bug: custom header restricts allowed methods to GET and POST, breaking PUT/DELETE CORS preflights
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Methods", "GET, POST");
-  next();
-});
+// ❌ Buggy middleware removed here so PUT, DELETE, etc. work seamlessly!
+
 app.use(express.json());
 
 // Middleware to ensure DB connection before handling requests
@@ -51,21 +47,14 @@ app.get("/", (req, res) => {
   res.send("Course Master Backend Running ✅");
 });
 
-// mounting auth routes
+// mounting routes
 app.use("/api/auth", authRoutes);
-// mounting course routes
 app.use("/api/courses", courseRoutes);
-// mounting admin routes
 app.use("/api/admin", adminRoutes);
-// mounting enrollment routes
 app.use("/api/enrollments", enrollmentRoutes);
-// mounting assignment routes
 app.use("/api/assignments", assignmentRoutes);
-// mounting quiz routes
 app.use("/api/quizzes", quizRoutes);
-// mounting user routes
 app.use("/api/users", userRoutes);
-
 
 // 404 handler (unknown routes)
 app.use((req, res) => {
